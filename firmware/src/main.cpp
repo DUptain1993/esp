@@ -18,9 +18,21 @@ TaskHandle_t comms_task_handle = NULL;
 // Handshake state
 bool handshake_done = false;
 
+// Idle management
+uint32_t last_interaction = 0;
+#define IDLE_TIMEOUT 30000 // 30 seconds
+
 void lvgl_task(void *pvParameters) {
     while (1) {
         lv_timer_handler();
+        
+        // Idle Dimming
+        if (lv_disp_get_inactive_time(NULL) > IDLE_TIMEOUT) {
+            digitalWrite(27, LOW); // Backlight OFF
+        } else {
+            digitalWrite(27, HIGH); // Backlight ON
+        }
+        
         vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
@@ -50,16 +62,21 @@ void on_control_packet(const packet_t *pkt) {
 void setup() {
     // Basic setup
     Serial.begin(115200);
+    Serial.println("System Starting...");
     
     // Initialize LVGL
     lv_init();
+    Serial.println("LVGL Initialized");
 
     // Initialize HAL
     hal_display_init();
+    Serial.println("Display HAL Initialized");
     hal_touch_init();
+    Serial.println("Touch HAL Initialized");
 
     // Initialize UI
     ui_init();
+    Serial.println("UI Initialized");
 
     // Initialize Comms
     comms_init();

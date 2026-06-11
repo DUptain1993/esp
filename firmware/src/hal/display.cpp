@@ -8,6 +8,14 @@ static lv_color_t *buf1;
 static lv_color_t *buf2;
 
 void hal_display_init(void) {
+    // Explicitly set pin modes for control pins
+    pinMode(15, OUTPUT); // CS
+    digitalWrite(15, HIGH);
+    pinMode(2, OUTPUT);  // DC
+    digitalWrite(2, HIGH);
+    pinMode(27, OUTPUT); // Backlight
+    digitalWrite(27, HIGH);
+
     tft.init();
     tft.setRotation(0); // Portrait 320x480
     tft.fillScreen(TFT_BLACK);
@@ -37,7 +45,8 @@ void hal_display_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_
 
     tft.startWrite();
     tft.setAddrWindow(area->x1, area->y1, w, h);
-    tft.pushColors((uint16_t *)&color_p->full, w * h, true);
+    // pushColors with swap=true is standard for LVGL 8 on ESP32 + SPI Display
+    tft.pushColors((uint16_t *)color_p, w * h, true);
     tft.endWrite();
 
     lv_disp_flush_ready(disp_drv);

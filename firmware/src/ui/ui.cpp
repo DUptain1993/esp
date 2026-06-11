@@ -10,11 +10,34 @@ static lv_obj_t *t_menu, *t_stream, *t_mirror, *t_ota, *t_devices;
 static lv_obj_t *status_bar;
 static lv_obj_t *lbl_device, *lbl_status, *lbl_cpu;
 
+#include "../core/comms.h"
+#include "../core/commands.h"
+
+static void ui_event_cb(lv_event_t *e) {
+    lv_event_code_t code = lv_event_get_code(e);
+
+    if (code == LV_EVENT_GESTURE) {
+        lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+        if (dir == LV_DIR_TOP) {
+            // Swipe UP -> Quick Action (e.g., Request Status)
+            uint8_t cmd = CMD_STATUS_REQ;
+            comms_send_packet(CH_CONTROL, app_device_manager_get_active_id(), &cmd, 1);
+            ui_update_status(NULL, "S-REQ SENT", 0);
+        }
+    } else if (code == LV_EVENT_LONG_PRESSED) {
+        // Long Press -> Execute command
+        uint8_t cmd = CMD_EXECUTE;
+        comms_send_packet(CH_CONTROL, app_device_manager_get_active_id(), &cmd, 1);
+        ui_update_status(NULL, "EXEC SENT", 0);
+    }
+}
+
 void ui_init(void) {
     ui_theme_init();
 
     // Background
     lv_obj_set_style_bg_color(lv_scr_act(), COLOR_BG, 0);
+    lv_obj_add_event_cb(lv_scr_act(), ui_event_cb, LV_EVENT_GESTURE, NULL);
 
     // TileView for screens
     tv = lv_tileview_create(lv_scr_act());
@@ -42,6 +65,18 @@ void ui_init(void) {
         lv_obj_t *lbl = lv_label_create(btn);
         lv_label_set_text(lbl, btns[i]);
         lv_obj_center(lbl);
+        lv_obj_add_event_cb(btn, ui_event_cb, LV_EVENT_LONG_PRESSED, NULL);
+        
+        // Handle menu navigation
+        if (i == 0) { // STREAM
+             lv_obj_add_event_cb(btn, [](lv_event_t *e){ lv_obj_set_tile_id(tv, 1, 0, LV_ANIM_ON); }, LV_EVENT_CLICKED, NULL);
+        } else if (i == 1) { // MIRROR
+             lv_obj_add_event_cb(btn, [](lv_event_t *e){ lv_obj_set_tile_id(tv, 2, 0, LV_ANIM_ON); }, LV_EVENT_CLICKED, NULL);
+        } else if (i == 2) { // OTA
+             lv_obj_add_event_cb(btn, [](lv_event_t *e){ lv_obj_set_tile_id(tv, 3, 0, LV_ANIM_ON); }, LV_EVENT_CLICKED, NULL);
+        } else if (i == 3) { // DEVICES
+             lv_obj_add_event_cb(btn, [](lv_event_t *e){ lv_obj_set_tile_id(tv, 4, 0, LV_ANIM_ON); }, LV_EVENT_CLICKED, NULL);
+        }
     }
 
     // Initialize App Views
