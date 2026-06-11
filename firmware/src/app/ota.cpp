@@ -33,7 +33,7 @@ void app_ota_handle_packet(const packet_t *pkt) {
         }
     } else if (cmd == 0x09) { // CHUNK
         size_t chunk_len = pkt->length - 1;
-        if (Update.write(&pkt->payload[1], chunk_len) == chunk_len) {
+        if (Update.write((uint8_t *)&pkt->payload[1], chunk_len) == chunk_len) {
             received_size += chunk_len;
             lv_bar_set_value(progress_bar, (received_size * 100) / update_size, LV_ANIM_OFF);
         }
