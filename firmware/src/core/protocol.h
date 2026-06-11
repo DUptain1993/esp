@@ -2,7 +2,6 @@
 #define CORE_PROTOCOL_H
 
 #include <stdint.h>
-#include <stddef.h>
 
 #define PKT_START_BYTE 0xAA
 #define PKT_END_BYTE   0x55
@@ -28,4 +27,4 @@ uint8_t protocol_calculate_checksum(const packet_t *pkt);
 bool protocol_parse_byte(uint8_t byte, packet_t *out_pkt);
 void protocol_build_packet(packet_t *pkt, channel_t channel, uint8_t device_id, const uint8_t *payload, uint8_t length);
 
-#endif // CORE_PROTOCOL_H
+#endif

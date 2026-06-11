@@ -10,9 +10,7 @@ static lv_color_t buf1[320 * 40];
 static lv_color_t buf2[320 * 40];
 
 /* -------- FLUSH -------- */
-void my_disp_flush(lv_disp_drv_t *disp,
-                   const lv_area_t *area,
-                   lv_color_t *color_p)
+void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
 {
     uint32_t w = area->x2 - area->x1 + 1;
     uint32_t h = area->y2 - area->y1 + 1;
@@ -39,8 +37,8 @@ void hal_display_init()
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
 
-    disp_drv.hor_res = 320;
-    disp_drv.ver_res = 480;
+    disp_drv.hor_res = 480; // Swapped for Rotation 1
+    disp_drv.ver_res = 320;
     disp_drv.flush_cb = my_disp_flush;
     disp_drv.draw_buf = &draw_buf;
 

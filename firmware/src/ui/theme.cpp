@@ -1,33 +1,24 @@
 #include "theme.h"
 
-static lv_style_t style_panel;
-static lv_style_t style_btn;
-static lv_style_t style_text;
+static lv_style_t s_p, s_b, s_t;
 
-void ui_theme_init(void) {
-    // Panel Style
-    lv_style_init(&style_panel);
-    lv_style_set_bg_color(&style_panel, COLOR_PANEL);
-    lv_style_set_bg_opa(&style_panel, LV_OPA_COVER);
-    lv_style_set_border_width(&style_panel, 1);
-    lv_style_set_border_color(&style_panel, COLOR_ACCENT);
-    lv_style_set_radius(&style_panel, 0);
+void ui_theme_init() {
+    lv_style_init(&s_p);
+    lv_style_set_bg_color(&s_p, lv_color_hex(0x12121A));
+    lv_style_set_border_color(&s_p, lv_color_hex(0x00FFD1));
+    lv_style_set_border_width(&s_p, 1);
+    lv_style_set_radius(&s_p, 0);
 
-    // Button Style
-    lv_style_init(&style_btn);
-    lv_style_set_bg_color(&style_btn, COLOR_PANEL);
-    lv_style_set_bg_opa(&style_btn, LV_OPA_COVER);
-    lv_style_set_border_width(&style_btn, 1);
-    lv_style_set_border_color(&style_btn, COLOR_ACCENT);
-    lv_style_set_text_color(&style_btn, COLOR_TEXT);
-    lv_style_set_radius(&style_btn, 0);
+    lv_style_init(&s_b);
+    lv_style_set_bg_color(&s_b, lv_color_hex(0x12121A));
+    lv_style_set_border_color(&s_b, lv_color_hex(0x00FFD1));
+    lv_style_set_border_width(&s_b, 1);
+    lv_style_set_text_color(&s_b, lv_color_hex(0xE0E0E0));
 
-    // Text Style
-    lv_style_init(&style_text);
-    lv_style_set_text_color(&style_text, COLOR_TEXT);
-    lv_style_set_text_font(&style_text, &lv_font_montserrat_14);
+    lv_style_init(&s_t);
+    lv_style_set_text_color(&s_t, lv_color_hex(0xE0E0E0));
 }
 
-lv_style_t *ui_get_style_panel(void) { return &style_panel; }
-lv_style_t *ui_get_style_btn(void) { return &style_btn; }
-lv_style_t *ui_get_style_text(void) { return &style_text; }
+lv_style_t *ui_get_style_panel() { return &s_p; }
+lv_style_t *ui_get_style_btn() { return &s_b; }
+lv_style_t *ui_get_style_text() { return &s_t; }
