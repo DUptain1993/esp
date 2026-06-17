@@ -175,7 +175,10 @@ static void term_input_cb(lv_event_t *e)
     lv_obj_t *ta = lv_event_get_target(e);
     const char *txt = lv_textarea_get_text(ta);
     if (txt && strlen(txt) > 0) {
-        comms_send_cmd(CH_CONTROL, DEVICE_SELF, CMD_INPUT, (const uint8_t*)txt, (uint8_t)strlen(txt));
+        uint8_t m[256]; m[0] = CMD_INPUT;
+        size_t l = strlen(txt); if (l > 254) l = 254;
+        memcpy(m + 1, txt, l);
+        comms_send(CH_CONTROL, DEVICE_SELF, m, (uint8_t)(l + 1), true, false);
         lv_textarea_set_text(ta, "");
     }
 }
@@ -205,7 +208,8 @@ static void term_input_focus_cb(lv_event_t *e)
 static void wifi_connect_cb(lv_event_t *e)
 {
     lv_obj_t *obj = lv_event_get_target(e);
-    lv_obj_t *mbox = lv_msgbox_get_from_btn(obj);
+    // In LVGL 8 msgbox, btnmatrix is a child of msgbox.
+    lv_obj_t *mbox = lv_obj_get_parent(lv_obj_get_parent(obj));
     lv_obj_t *ta = (lv_obj_t *)lv_event_get_user_data(e);
     const char *pass = lv_textarea_get_text(ta);
 
@@ -288,7 +292,8 @@ static void dev_row_cb(lv_event_t *e)
 {
     lv_obj_t *btn = lv_event_get_target(e);
     uint8_t id = (uint8_t)(intptr_t)lv_event_get_user_data(e);
-    comms_send_cmd(CH_ROUTING, DEVICE_SELF, RT_SELECT, &id, 1);
+    uint8_t m[2] = {RT_SELECT, id};
+    comms_send(CH_ROUTING, DEVICE_SELF, m, 2, true, false);
 }
 
 static void wifi_reconnect_label(void)

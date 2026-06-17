@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <lvgl.h>
+#include <WiFi.h>
 
 #include "hal/display.h"
 #include "hal/touch.h"
