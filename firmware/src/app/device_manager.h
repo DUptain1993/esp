@@ -1,11 +1,28 @@
-#ifndef APP_DEVICE_MANAGER_H
-#define APP_DEVICE_MANAGER_H
+#pragma once
+#include <Arduino.h>
 
-#include <lvgl.h>
-#include "../core/protocol.h"
+// Multi-device routing: tracks discovered devices by DEVICE_ID, supports an
+// active-device selection and broadcasting.
 
-void app_device_manager_init(lv_obj_t *parent);
-void app_device_manager_handle_packet(const packet_t *pkt);
-uint8_t app_device_manager_get_active_id(void);
+#define DM_MAX_DEVICES 16
 
-#endif // APP_DEVICE_MANAGER_H
+void dm_init(void);
+
+// Record activity from a device id (call on every received packet).
+void dm_seen(uint8_t id);
+
+// Select the active device (target for control/stream commands).
+bool dm_select(uint8_t id);
+uint8_t dm_active(void);
+
+// Send a control opcode to every known device (broadcast).
+void dm_broadcast_cmd(uint8_t channel, uint8_t cmd);
+
+// Number of known devices.
+uint8_t dm_count(void);
+
+// Refresh the devices UI page.
+void dm_render(void);
+
+// Periodic service: expires stale devices.
+void dm_service(void);

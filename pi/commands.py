@@ -1,0 +1,61 @@
+"""Command opcodes — must match firmware/src/core/commands.h"""
+
+from .protocol import (  # re-export channels for convenience
+    CH_CONTROL, CH_STATUS, CH_STREAM, CH_OTA, CH_ROUTING,
+)
+
+# Addressing
+DEVICE_BROADCAST = 0xFF
+DEVICE_SELF = 0x01
+
+# Comms payload flag bits ([FLAGS][MSG_LEN][PAD_LEN][BODY])
+FLAG_RLE = 0x01
+FLAG_DELTA = 0x02
+FLAG_ENC = 0x04
+
+# CH_CONTROL
+CMD_NOISE = 0x00
+CMD_PING = 0x10
+CMD_PONG = 0x11
+CMD_HANDSHAKE = 0x12
+CMD_SET_MODE = 0x20
+CMD_QUICK_ACTION = 0x21
+CMD_EXECUTE = 0x22
+CMD_PAGE_NEXT = 0x23
+CMD_PAGE_PREV = 0x24
+CMD_INPUT = 0x25
+
+# CH_STATUS
+ST_HEARTBEAT = 0x30
+ST_DEVICE_UP = 0x31
+ST_DEVICE_DN = 0x32
+ST_INFO = 0x33
+
+# CH_STREAM
+STR_DATA = 0x40
+STR_CLEAR = 0x41
+STR_MIRROR = 0x42
+
+# Mirror draw ops (payload of STR_MIRROR)
+MOP_FILL = 0x01
+MOP_PIXEL = 0x02
+MOP_RECT = 0x03
+MOP_HLINE = 0x04
+
+# Mirror modes
+MIRROR_TERMINAL = 0x00
+MIRROR_GRAPHICAL = 0x01
+
+# CH_OTA
+OTA_BEGIN = 0x50
+OTA_CHUNK = 0x51
+OTA_END = 0x52
+OTA_ABORT = 0x53
+OTA_PROGRESS = 0x54
+OTA_DONE = 0x55
+OTA_FAIL = 0x56
+
+# CH_ROUTING
+RT_SELECT = 0x60
+RT_LIST = 0x61
+RT_BROADCAST = 0x62

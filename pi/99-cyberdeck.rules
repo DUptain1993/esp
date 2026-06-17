@@ -1,0 +1,5 @@
+# Udev rules for Cyberdeck ESP32 Frontend
+# CP2102
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="cyberdeck"
+# CH340
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="cyberdeck"

@@ -1,0 +1,25 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+*.gcc
+*.gdb
+.vscode/
+
+# Python
+__pycache__/
+venv/
+.env
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vendor Folder
+3.5inch_ESP32-32E_ST7796_E32R35T_E32N35T_V1.0/
+
+# Specific ignores
+firmware/.pio/
+pi/__pycache__/
+pi/venv/

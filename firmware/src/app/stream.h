@@ -1,10 +1,14 @@
-#ifndef APP_STREAM_H
-#define APP_STREAM_H
+#pragma once
+#include <Arduino.h>
 
-#include <lvgl.h>
-#include "../core/protocol.h"
+// Live terminal stream (CH_STREAM). Parses a useful subset of ANSI/VT100
+// escape sequences (SGR colours, cursor movement, erase line/screen) and
+// renders into the LVGL textarea with a bounded ring buffer + auto-scroll.
 
-void app_stream_init(lv_obj_t *parent);
-void app_stream_handle_packet(const packet_t *pkt);
+void stream_init(void);
 
-#endif // APP_STREAM_H
+// Feed raw stream bytes (already de-framed/decrypted/decompressed).
+void stream_feed(const uint8_t *data, size_t len);
+
+// Clear the terminal view.
+void stream_clear(void);

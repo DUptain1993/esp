@@ -21,11 +21,11 @@ Built with PlatformIO.
 2. `cd firmware`
 3. `pio run -t upload`
 
-## Service (Raspberry Pi)
-Requires Python 3.9+.
-1. `cd service`
-2. `pip install -r requirements.txt`
-3. `python3 -m service.main`
+## Controller (Raspberry Pi)
+Requires Python 3.11+ (Bookworm recommended).
+1. `cd pi`
+2. `./install.sh`
+3. The service will be managed by systemd as `cyberdeck.service`.
 
 ## CI/CD
 Automated builds are configured via GitHub Actions in `.github/workflows/build.yml`.

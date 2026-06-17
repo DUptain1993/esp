@@ -1,0 +1,17 @@
+[Unit]
+Description=Distributed Cyberdeck Controller (ESP32 frontend link)
+After=network.target
+
+[Service]
+Type=simple
+User={{USER}}
+WorkingDirectory={{WORKDIR}}
+Environment=PYTHONUNBUFFERED=1
+Environment=CYBERDECK_PORT=/dev/cyberdeck
+Environment=CYBERDECK_BAUD=115200
+ExecStart={{WORKDIR}}/venv/bin/python3 -m pi.main
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

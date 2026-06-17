@@ -1,15 +1,36 @@
 #include "encryption.h"
 
-static uint32_t current_key = 0;
+Crypto::Crypto()
+{
+    _secret = CRYPTO_SHARED_SECRET;
+    _key = _secret;
+}
 
-void encryption_init(uint32_t key) { current_key = key; }
+void Crypto::begin(uint32_t shared_secret, uint32_t nonce)
+{
+    _secret = shared_secret;
+    _key = _secret ^ nonce;
+}
 
-uint32_t encryption_derive_key(uint32_t nonce) { return SHARED_SECRET ^ nonce; }
+void Crypto::set_nonce(uint32_t nonce)
+{
+    _key = _secret ^ nonce;
+}
 
-void encryption_process(uint8_t *data, size_t length) {
-    if (current_key == 0) return;
-    for (size_t i = 0; i < length; i++) {
-        data[i] ^= (current_key >> ((i % 4) * 8)) & 0xFF;
+void Crypto::evolve()
+{
+    // 32-bit left rotate by 1.
+    _key = (_key << 1) | (_key >> 31);
+}
+
+void Crypto::process(uint8_t *data, size_t len)
+{
+    if (!data) return;
+    for (size_t i = 0; i < len; i++) {
+        // Key byte selected by position within the 32-bit key.
+        uint8_t k = (uint8_t)(_key >> ((i % 4) * 8));
+        data[i] ^= k;
     }
-    current_key = (current_key * 1103515245 + 12345);
+    // Evolve key for the next packet.
+    evolve();
 }
