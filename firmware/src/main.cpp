@@ -223,7 +223,8 @@ void setup()
 
     hal_display_backlight(Settings::getInstance().getBrightness());
 
-    // WiFi auto-reconnect.
+    // WiFi setup & auto-reconnect.
+    WiFi.mode(WIFI_STA);
     String ssid = Settings::getInstance().getWifiSSID();
     String pass = Settings::getInstance().getWifiPass();
     if (ssid.length() > 0) {
