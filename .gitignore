@@ -23,3 +23,11 @@ Thumbs.db
 firmware/.pio/
 pi/__pycache__/
 pi/venv/
+
+# Marauder vendored libraries (fetched via scripts/fetch_libs.sh / CI)
+firmware/features_imported/ESP32Marauder-cyd-master/esp32_marauder/libraries/
+firmware/features_imported/ESP32Marauder-cyd-master/libraries/AsyncTCP/
+firmware/features_imported/ESP32Marauder-cyd-master/.pio/
+
+# Local agent helper (not for publishing)
+agent.txt
