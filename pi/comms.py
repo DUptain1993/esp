@@ -93,7 +93,7 @@ class Comms:
             pass
         self.parser.reset()
         msg = bytes([C.CMD_HANDSHAKE]) + struct.pack("<I", nonce)
-        self.send(C.CH_CONTROL, C.DEVICE_SELF, msg, encrypt=True, compress=False)
+        self.send(C.CH_CONTROL, C.DEVICE_SELF, msg, encrypt=False, compress=False)
         self.tx.set_nonce(nonce)
         self.rx.set_nonce(nonce)
         log.info("handshake sent, nonce=0x%08X key=0x%08X", nonce, self.tx.key)

@@ -61,10 +61,29 @@ uint8_t Display::updateTouch(uint16_t *x, uint16_t *y, uint16_t threshold) {
           const uint16_t Y_RAW_TOP   = 3790; // screen y = 0
           const uint16_t Y_RAW_BOTTOM = 250;  // screen y = TFT_HEIGHT
 
-          long sx = map((long)rawX, X_RAW_LEFT, X_RAW_RIGHT, 0, TFT_WIDTH);
-          long sy = map((long)rawY, Y_RAW_TOP, Y_RAW_BOTTOM, 0, TFT_HEIGHT);
-          *x = (uint16_t)constrain(sx, 0, TFT_WIDTH - 1);
-          *y = (uint16_t)constrain(sy, 0, TFT_HEIGHT - 1);
+          long sx, sy;
+          uint8_t rot = this->tft.getRotation();
+          if (rot == 1) {
+            sx = map((long)rawY, Y_RAW_TOP, Y_RAW_BOTTOM, 0, TFT_HEIGHT); // 480
+            sy = map((long)rawX, X_RAW_RIGHT, X_RAW_LEFT, 0, TFT_WIDTH);  // 320
+            *x = (uint16_t)constrain(sx, 0, TFT_HEIGHT - 1);
+            *y = (uint16_t)constrain(sy, 0, TFT_WIDTH - 1);
+          } else if (rot == 2) {
+            sx = map((long)rawX, X_RAW_RIGHT, X_RAW_LEFT, 0, TFT_WIDTH);
+            sy = map((long)rawY, Y_RAW_BOTTOM, Y_RAW_TOP, 0, TFT_HEIGHT);
+            *x = (uint16_t)constrain(sx, 0, TFT_WIDTH - 1);
+            *y = (uint16_t)constrain(sy, 0, TFT_HEIGHT - 1);
+          } else if (rot == 3) {
+            sx = map((long)rawY, Y_RAW_BOTTOM, Y_RAW_TOP, 0, TFT_HEIGHT);
+            sy = map((long)rawX, X_RAW_LEFT, X_RAW_RIGHT, 0, TFT_WIDTH);
+            *x = (uint16_t)constrain(sx, 0, TFT_HEIGHT - 1);
+            *y = (uint16_t)constrain(sy, 0, TFT_WIDTH - 1);
+          } else { // rot == 0 (Portrait)
+            sx = map((long)rawX, X_RAW_LEFT, X_RAW_RIGHT, 0, TFT_WIDTH);
+            sy = map((long)rawY, Y_RAW_TOP, Y_RAW_BOTTOM, 0, TFT_HEIGHT);
+            *x = (uint16_t)constrain(sx, 0, TFT_WIDTH - 1);
+            *y = (uint16_t)constrain(sy, 0, TFT_HEIGHT - 1);
+          }
 
           #ifdef TOUCH_DEBUG
             static uint32_t lastDbg = 0;

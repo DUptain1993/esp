@@ -84,15 +84,25 @@ def main():
 
     last_heartbeat = 0.0
     last_expire = 0.0
+    last_handshake = 0.0
     try:
         while True:
             comms.update()
             stream.shell_pump()
 
             now = time.time()
-            if now - last_heartbeat >= 5.0:
-                last_heartbeat = now
-                comms.send_cmd(C.CH_STATUS, PI_DEVICE_ID, C.ST_HEARTBEAT)
+            if len(devices.devices) == 0:
+                dispatcher.link_established = False
+
+            if not dispatcher.link_established:
+                if now - last_handshake >= 2.0:
+                    last_handshake = now
+                    comms.handshake()
+            else:
+                if now - last_heartbeat >= 5.0:
+                    last_heartbeat = now
+                    comms.send_cmd(C.CH_STATUS, PI_DEVICE_ID, C.ST_HEARTBEAT)
+
             if now - last_expire >= 10.0:
                 last_expire = now
                 devices.expire()

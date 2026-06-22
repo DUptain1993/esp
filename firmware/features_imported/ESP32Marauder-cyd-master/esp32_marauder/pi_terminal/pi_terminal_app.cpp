@@ -258,6 +258,25 @@ static int footer_hit(int x, int y) {
     return 0;
 }
 
+static bool getTouchCalibrated(uint16_t *x, uint16_t *y) {
+    uint16_t z = tft.getTouchRawZ();
+    if (z < 600) return false;
+
+    uint16_t rawX = 0, rawY = 0;
+    tft.getTouchRaw(&rawX, &rawY);
+
+    const uint16_t X_RAW_LEFT  = 420;  // screen x = 0
+    const uint16_t X_RAW_RIGHT = 3660; // screen x = 320
+    const uint16_t Y_RAW_TOP   = 3790; // screen y = 0
+    const uint16_t Y_RAW_BOTTOM = 250;  // screen y = 480
+
+    long sx = map((long)rawX, X_RAW_LEFT, X_RAW_RIGHT, 0, 320);
+    long sy = map((long)rawY, Y_RAW_TOP, Y_RAW_BOTTOM, 0, 480);
+    *x = (uint16_t)constrain(sx, 0, 319);
+    *y = (uint16_t)constrain(sy, 0, 479);
+    return true;
+}
+
 void pi_terminal_open() {
     // Lazily configure our display instance to match Marauder's panel.
     static bool disp_ready = false;
@@ -294,7 +313,7 @@ void pi_terminal_open() {
             draw_header();
         }
 
-        bool touching = tft.getTouch(&tx, &ty);
+        bool touching = getTouchCalibrated(&tx, &ty);
         if (touching && !wasTouched) {
             wasTouched = true;
             int hit = footer_hit((int)tx, (int)ty);
